@@ -29,7 +29,7 @@ def navigate(folder: Path, delete: bool):
         if delete and jpegs:
             for j in jpegs:
                 print(f'deleting jpeg {str(j)}')
-                os.remove(str(j))
+                os.remove(j)
 
         for tiff in tiffs:
             subprocess.run(["magick", "mogrify", "-quiet", "-density", "300", "-format", "jpg", f'{str(tiff)}'])
