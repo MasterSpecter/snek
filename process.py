@@ -18,11 +18,8 @@ def get_subs(folder: Path):
 
 def navigate(folder: Path, delete: bool):
     subs = get_subs(folder)
-    print(subs)
     jpegs = get_jpegs(folder)
-    print(jpegs)
     tiffs = get_tiffs(folder)
-    print(tiffs)
     print(f'working in folder {str(folder)}')
 
     if tiffs:
@@ -41,7 +38,7 @@ def navigate(folder: Path, delete: bool):
         with ZipFile(zip_folder, "w") as raw:
             for tiff in tiffs:
                 print(f'writing tiff {str(tiff)} to {str(zip_folder)}')
-                raw.write(tiff)
+                raw.write(str(tiff))
 
         # jpegs = get_jpegs(folder)
         # for jpeg in jpegs:
