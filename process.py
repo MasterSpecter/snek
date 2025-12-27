@@ -38,7 +38,7 @@ def navigate(folder: Path, delete: bool):
         with ZipFile(zip_folder, "w") as raw:
             for tiff in tiffs:
                 print(f'writing tiff {str(tiff)} to {str(zip_folder)}')
-                raw.write(str(tiff))
+                raw.write(tiff)
 
         # jpegs = get_jpegs(folder)
         # for jpeg in jpegs:
