@@ -26,8 +26,8 @@ def navigate(folder: Path, delete: bool):
     print(f'working in folder {str(folder)}')
 
     if tiffs:
-        upload_dir = folder / "_IA"
-        upload_dir.mkdir()
+        # upload_dir = folder / "_IA"
+        # upload_dir.mkdir()
 
         if delete and jpegs:
             for j in jpegs:
@@ -43,11 +43,11 @@ def navigate(folder: Path, delete: bool):
                 print(f'writing tiff {str(tiff)} to {str(zip_folder)}')
                 raw.write(tiff)
 
-        jpegs = get_jpegs(folder)
-        for jpeg in jpegs:
-            shutil.move(str(jpeg), str(upload_dir / jpeg.name))
+        # jpegs = get_jpegs(folder)
+        # for jpeg in jpegs:
+        #     shutil.move(str(jpeg), str(upload_dir / jpeg.name))
 
-        shutil.move(str(zip_folder), str(upload_dir / zip_folder.name))
+        # shutil.move(str(zip_folder), str(upload_dir / zip_folder.name))
 
     for sub in subs:
         navigate(sub, delete)
