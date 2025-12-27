@@ -3,7 +3,7 @@
 from pathlib import Path
 import argparse
 import os
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 import subprocess
 import shutil
 
@@ -23,8 +23,8 @@ def navigate(folder: Path, delete: bool):
     print(f'working in folder {str(folder)}')
 
     if tiffs:
-        # upload_dir = folder / "_IA"
-        # upload_dir.mkdir()
+        upload_dir = folder / "_IA"
+        upload_dir.mkdir()
 
         if delete and jpegs:
             for j in jpegs:
@@ -35,23 +35,22 @@ def navigate(folder: Path, delete: bool):
             subprocess.run(["magick", "mogrify", "-quiet", "-density", "300", "-format", "jpg", f'{str(tiff)}'])
 
         zip_folder = folder / "raw.zip"
-        with ZipFile(zip_folder, "w") as raw:
+        with ZipFile(zip_folder, "w", compression=ZIP_DEFLATED) as raw:
             for tiff in tiffs:
-                print(f'writing tiff {str(tiff)} to {str(zip_folder)}')
-                raw.write(tiff)
+                raw.write(tiff, arcname=tiff.name)
 
-        # jpegs = get_jpegs(folder)
-        # for jpeg in jpegs:
-        #     shutil.move(str(jpeg), str(upload_dir / jpeg.name))
+        jpegs = get_jpegs(folder)
+        for jpeg in jpegs:
+            shutil.move(str(jpeg), str(upload_dir / jpeg.name))
 
-        # shutil.move(str(zip_folder), str(upload_dir / zip_folder.name))
+        shutil.move(str(zip_folder), str(upload_dir / zip_folder.name))
 
     for sub in subs:
         navigate(sub, delete)
 
 def process(base: str, delete: bool):
     base_path = Path(base)
-    print(f'Base is {str(base_path)}')
+    print(f'Base is {str(base_path)}, {"DELETING" if delete else "NOT deleting"} existing JPEGs')
     navigate(base_path, delete)
 
 if __name__ == "__main__":
