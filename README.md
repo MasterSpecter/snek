@@ -1,14 +1,15 @@
 # Image Processing Tool
 
 ```shell
-usage: python process.py [-h] [-d] base
+usage: python process.py [-h] [-d] [-v] base
 
 positional arguments:
-  base          Path to base folder that will be recursively searched for TIFFs
+  base           Path to base folder that will be recursively searched for TIFFs
 
 options:
-  -h, --help    show this help message and exit
-  -d, --delete  Delete existing JPEGs
+  -h, --help     show this help message and exit
+  -d, --delete   Delete existing JPEGs
+  -v, --verbose  Show logs
 ```
 
 ## Description

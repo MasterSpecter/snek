@@ -7,6 +7,8 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import subprocess
 import shutil
 
+IA_folder_name = "_IA"
+
 def get_jpegs(folder: Path):
     return [jpeg for jpeg in folder.iterdir() if jpeg.suffix == '.jpg']
 
@@ -16,19 +18,26 @@ def get_tiffs(folder: Path):
 def get_subs(folder: Path):
     return [sub for sub in folder.iterdir() if sub.is_dir()]
 
-def navigate(folder: Path, delete: bool):
+def navigate(folder: Path, delete: bool, verbose: bool):
+    if verbose:
+        print(f'Working in folder {str(folder)}')
+
     subs = get_subs(folder)
     jpegs = get_jpegs(folder)
-    tiffs = get_tiffs(folder)
-    print(f'Working in folder {str(folder)}')
-    upload_dir = folder / "_IA"
+    tiffs = get_tiffs(folder)    
+    upload_dir = folder / IA_folder_name
 
     if not upload_dir.exists() and tiffs:
+        if verbose:
+            print(f'Processing TIFFs {tiffs}')
+
         upload_dir.mkdir()
 
         if delete and jpegs:
             for j in jpegs:
-                print(f'Deleting jpeg {str(j)}')
+                if verbose:
+                    print(f'Deleting jpeg {str(j)}')
+                    
                 os.remove(j)
 
         for tiff in tiffs:
@@ -45,19 +54,22 @@ def navigate(folder: Path, delete: bool):
 
         shutil.move(str(zip_folder), str(upload_dir / zip_folder.name))
     else:
-        print(f'Ignoring folder {str(folder)}')
+        if verbose:
+            print(f'Ignoring folder {str(folder)}, folder {str(upload_dir)} exists: {upload_dir.exists()}, tiffs: {tiffs}')
 
     for sub in subs:
-        navigate(sub, delete)
+        if sub.name != IA_folder_name:
+            navigate(sub, delete, verbose)
 
-def process(base: str, delete: bool):
+def process(base: str, delete: bool, verbose: bool):
     base_path = Path(base)
     print(f'Base is {str(base_path)}, {"DELETING" if delete else "NOT deleting"} existing JPEGs')
-    navigate(base_path, delete)
+    navigate(base_path, delete, verbose)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("base", help="Path to base folder that will be recursively searched for TIFFs")
     parser.add_argument("-d", "--delete", action="store_true", help="Delete existing JPEGs")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Show logs")
     args = parser.parse_args()
-    process(args.base, args.delete)
+    process(args.base, args.delete, args.verbose)
