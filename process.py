@@ -20,15 +20,15 @@ def navigate(folder: Path, delete: bool):
     subs = get_subs(folder)
     jpegs = get_jpegs(folder)
     tiffs = get_tiffs(folder)
-    print(f'working in folder {str(folder)}')
+    print(f'Working in folder {str(folder)}')
+    upload_dir = folder / "_IA"
 
-    if tiffs:
-        upload_dir = folder / "_IA"
+    if not upload_dir.exists() and tiffs:
         upload_dir.mkdir()
 
         if delete and jpegs:
             for j in jpegs:
-                print(f'deleting jpeg {str(j)}')
+                print(f'Deleting jpeg {str(j)}')
                 os.remove(j)
 
         for tiff in tiffs:
@@ -44,6 +44,8 @@ def navigate(folder: Path, delete: bool):
             shutil.move(str(jpeg), str(upload_dir / jpeg.name))
 
         shutil.move(str(zip_folder), str(upload_dir / zip_folder.name))
+    else:
+        print(f'Ignoring folder {str(folder)}')
 
     for sub in subs:
         navigate(sub, delete)
